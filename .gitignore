@@ -1,0 +1,15 @@
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Scala ###
+*.class
+*.log
+.bloop/*
+.metals/*
+.idea/*
+target/*
+project/.bloop/*
+project/target/*
