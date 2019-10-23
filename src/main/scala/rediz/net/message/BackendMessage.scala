@@ -9,8 +9,9 @@ trait BackendMessage
 object BackendMessage {
   def decoder(tag: Byte): Decoder[BackendMessage] =
     (tag: @switch) match {
-      case SimpleString.Tag => SimpleString.decoder
-      case BulkString.Tag   => BulkString.decoder
-      case _                => UnknownMessage.decoder(tag)
+      case StringReply.Tag    => StringReply.decoder
+      case BulkReply.Tag      => BulkReply.decoder
+      case MultiBulkReply.Tag => MultiBulkReply.decoder
+      case _                  => UnknownReply.decoder(tag)
     }
 }
