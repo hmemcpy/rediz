@@ -3,6 +3,7 @@ package rediz.net
 import rediz.net.message.{BackendMessage, FrontEndMessage}
 import zio.{Managed, Runtime, Task}
 import scala.concurrent.duration._
+import scodec.codecs._
 
 trait MessageSocket {
   def receive: Task[BackendMessage]
@@ -22,17 +23,19 @@ object MessageSocket {
 
   def fromBitVectorSocket(
       bvs: BitVectorSocket,
-      nBytes: Int = 1024
+      nBytes: Int = 8192
   ): MessageSocket =
     new MessageSocket {
 
-      override def receive: Task[BackendMessage] = {
-        bvs.read(nBytes).map { bits =>
-          val bv = bits.toByteVector
-          val tag = bv.get(0)
-          BackendMessage.decoder(tag).decode(bv.drop(1).toBitVector).require.value
+      override def receive: Task[BackendMessage] =
+        bvs.read(1).flatMap { bits =>
+          val header = byte
+          val tag = header.decodeValue(bits).require
+          val decoder = BackendMessage.decoder(tag)
+          bvs.read(nBytes - 1).map(b => {
+            decoder.decodeValue(b).require
+          })
         }
-      }
 
       override def send[A](a: A)(implicit ev: FrontEndMessage[A]): Task[Unit] =
         bvs.write(ev.encoder.encode(a).require) *> Task.unit

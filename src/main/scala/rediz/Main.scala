@@ -1,7 +1,7 @@
 package rediz
 
 import rediz.net.MessageSocket
-import rediz.protocol.Ping
+import rediz.protocol._
 import zio._
 import zio.console._
 import zio.interop.catz._
@@ -23,5 +23,3 @@ object Main extends CatsApp {
         } yield ()
       }
 }
-
-
