@@ -4,7 +4,9 @@ import rediz.protocol._
 import scodec.Codec
 import scodec.codecs._
 
-case class MultiBulkReply(replies: List[BulkReply]) extends BackendMessage
+case class MultiBulkReply(replies: List[BulkReply]) extends BackendMessage {
+  override def toString: String = replies.mkString("\n")
+}
 
 object MultiBulkReply {
   final val Tag = '*'

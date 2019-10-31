@@ -1,7 +1,8 @@
 package rediz
 
 import scodec.bits.{BitVector, ByteVector}
-import scodec.{Attempt, Codec, DecodeResult, Encoder, Err, SizeBound}
+import scodec.codecs._
+import scodec._
 
 package object protocol {
   val crlf: ByteVector = ByteVector('\r', '\n')
@@ -13,9 +14,28 @@ package object protocol {
       }
   }
 
+  def encode[A](cmd: String, args: String*): Attempt[BitVector] = {
+    def encodeArg: Encoder[String] =
+      Encoder { s =>
+        for {
+          b   <- byte.encode('$')
+          len <- lengthCrlf.encode(s.length)
+          cmd <- utf8crlf.encode(s)
+        } yield b ++ len ++ cmd
+      }
+
+    for {
+      argsByte <- byte.encode('*')
+      argsLen  <- lengthCrlf.encode(args.length + 1)
+      cmd      <- encodeArg.encode(cmd)
+      args     <- Encoder.encodeSeq(encodeArg)(args)
+    } yield argsByte ++ argsLen ++ cmd ++ args
+  }
+
   def lengthCrlf: Codec[Int] = new Codec[Int] {
-    override def sizeBound: SizeBound                   = SizeBound.unknown
-    override def encode(value: Int): Attempt[BitVector] = ???
+    override def sizeBound: SizeBound = SizeBound.unknown
+    override def encode(value: Int): Attempt[BitVector] =
+      utf8.encode(value.toString).map(_ ++ crlf.toBitVector)
     override def decode(bits: BitVector): Attempt[DecodeResult[Int]] =
       decodeUntilCrlf(bits) { b =>
         b.decodeAscii.map(_.toIntOption) match {
@@ -26,8 +46,9 @@ package object protocol {
   }
 
   def utf8crlf: Codec[String] = new Codec[String] {
-    override def sizeBound: SizeBound                      = SizeBound.unknown
-    override def encode(value: String): Attempt[BitVector] = ???
+    override def sizeBound: SizeBound = SizeBound.unknown
+    override def encode(value: String): Attempt[BitVector] =
+      utf8.encode(value).map(_ ++ crlf.toBitVector)
     override def decode(bits: BitVector): Attempt[DecodeResult[String]] = {
       decodeUntilCrlf(bits) { bv =>
         scodec.codecs.utf8

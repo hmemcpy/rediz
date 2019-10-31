@@ -1,20 +1,17 @@
 package rediz.protocol
 
-import rediz.net.message.FrontEndMessage
+import rediz.net.message.RedisCommand
 import scodec.Encoder
-import scodec.codecs._
 
 case class Ping(message: String = "")
 
 object Ping {
-  implicit val PingMessage = FrontEndMessage {
-    val payload: Encoder[Ping] =
-      Encoder { p =>
-        p.message match {
-          case m if m.isEmpty => utf8.encode("PING")
-          case m              => utf8.encode(s"PING '$m'")
-        }
+  implicit val PingMessage = RedisCommand {
+    Encoder { p: Ping =>
+      p.message match {
+        case m if m.isEmpty => encode("PING")
+        case m              => encode("PING", m)
       }
-    payload.withCrlf
+    }
   }
 }
