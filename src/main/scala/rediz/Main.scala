@@ -11,7 +11,7 @@ object Main extends CatsApp {
     program
       .foldM(t => Task.effectTotal(t.printStackTrace()) *> ZIO.succeed(1), _ => ZIO.succeed(0))
 
-  val msg = Ping()
+  val msg = RedisCommand("CLIENT")
 
   def program =
     MessageSocket("localhost", 6379)

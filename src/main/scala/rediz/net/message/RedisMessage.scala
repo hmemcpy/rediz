@@ -2,13 +2,13 @@ package rediz.net.message
 
 import scodec.Encoder
 
-trait RedisCommand[A] {
+trait RedisMessage[A] {
   def encoder: Encoder[A]
 }
 
-object RedisCommand {
-  def apply[A](enc: Encoder[A]): RedisCommand[A] =
-    new RedisCommand[A] {
+object RedisMessage {
+  def apply[A](enc: Encoder[A]): RedisMessage[A] =
+    new RedisMessage[A] {
       override def encoder: Encoder[A] = enc
     }
 }

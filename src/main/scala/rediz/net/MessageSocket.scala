@@ -1,13 +1,13 @@
 package rediz.net
 
-import rediz.net.message.{BackendMessage, RedisCommand}
+import rediz.net.message.{BackendMessage, RedisMessage}
 import zio.{Managed, Runtime, Task}
 import scala.concurrent.duration._
 import scodec.codecs._
 
 trait MessageSocket {
   def receive: Task[BackendMessage]
-  def send[A: RedisCommand](a: A): Task[Unit]
+  def send[A: RedisMessage](a: A): Task[Unit]
 }
 
 object MessageSocket {
@@ -37,7 +37,7 @@ object MessageSocket {
           })
         }
 
-      override def send[A](a: A)(implicit ev: RedisCommand[A]): Task[Unit] =
+      override def send[A](a: A)(implicit ev: RedisMessage[A]): Task[Unit] =
         bvs.write(ev.encoder.encode(a).require) *> Task.unit
     }
 }

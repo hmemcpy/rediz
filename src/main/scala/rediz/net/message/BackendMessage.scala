@@ -12,6 +12,7 @@ object BackendMessage {
       case StringReply.Tag    => StringReply.decoder
       case BulkReply.Tag      => BulkReply.decoder
       case MultiBulkReply.Tag => MultiBulkReply.decoder
+      case ErrorReply.Tag     => ErrorReply.decoder
       case _                  => UnknownReply.decoder(tag)
     }
 }

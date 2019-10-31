@@ -1,6 +1,6 @@
 package rediz.net.message
 
-import rediz.protocol._
+import rediz.protocol.Codecs._
 import scodec.Codec
 import scodec.codecs._
 
