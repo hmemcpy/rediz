@@ -73,4 +73,7 @@ object Codecs {
       }
     }
   }
+
+  def emptyEncoder[A]: Encoder[A] =
+    Encoder { _ => Attempt.successful(BitVector.empty) }
 }
