@@ -1,25 +1,10 @@
 package rediz
 
-import rediz.net.MessageSocket
-import rediz.protocol._
-import zio._
-import zio.console._
 import zio.interop.catz._
 
 object Main extends CatsApp {
   def run(args: List[String]) =
-    program
-      .foldM(t => Task.effectTotal(t.printStackTrace()) *> ZIO.succeed(1), _ => ZIO.succeed(0))
+    REPL("localhost", 6379)
+      .fold(_ => 1, _ => 0)
 
-  val msg = RedisCommand("CLIENT")
-
-  def program =
-    MessageSocket("localhost", 6379)
-      .use { sock =>
-        for {
-          _  <- sock.send(msg)
-          bm <- sock.receive
-          _  <- putStrLn(bm.toString)
-        } yield ()
-      }
 }
