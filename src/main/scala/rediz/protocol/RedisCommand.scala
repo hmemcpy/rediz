@@ -1,6 +1,5 @@
 package rediz.protocol
 
-import rediz.net.message.RedisMessage
 import rediz.protocol.Codecs._
 import scodec.Encoder
 

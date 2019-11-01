@@ -1,7 +1,9 @@
 package rediz.net
 
-import rediz.net.message.{BackendMessage, RedisMessage}
+import rediz.net.message.BackendMessage
+import rediz.protocol.RedisMessage
 import zio.{Managed, Runtime, Task}
+
 import scala.concurrent.duration._
 import scodec.codecs._
 

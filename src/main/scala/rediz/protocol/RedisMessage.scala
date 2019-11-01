@@ -1,4 +1,4 @@
-package rediz.net.message
+package rediz.protocol
 
 import scodec.Encoder
 

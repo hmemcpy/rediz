@@ -62,7 +62,7 @@ object Codecs {
     val bv  = bits.toByteVector
     val idx = bv.indexOfSlice(until)
     if (idx < 0 || idx > bv.length)
-      Attempt.failure(Err(s"""Cannot find the $until bytes"""))
+      Attempt.failure(Err(s"""Cannot find the 0x${until.toHex} bytes to decode until"""))
     else {
       bv.consume(idx)(decoder) match {
         case Left(_) => Attempt.failure(Err.insufficientBits(idx, bv.size))
