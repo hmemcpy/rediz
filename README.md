@@ -5,7 +5,7 @@
 
 This is a redis client in Scala, implementing the [redis protocol](https://redis.io/topics/protocol) using FS2 sockets, scodec, ZIO (using zio-cats interop).
 
-**This is a tiny toy example and nor ready for any production use!** Improvements always welcomed!
+**This is a tiny toy example and not ready for any production use!** Improvements always welcomed!
 
 Inspired by the excellent work by [Rob Norris](https://twitter.com/tpolecat) on [Skunk](https://github.com/tpolecat/skunk) - a Postgres data access library.
 
